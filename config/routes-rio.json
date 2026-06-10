@@ -3,8 +3,10 @@
     {
       "origin": "EZE",
       "destination": "GIG",
-      "sources": ["google_flights"],
-      "threshold_usd": 600,
+      "sources": [
+        "google_flights"
+      ],
+      "threshold_usd": 400,
       "depart_from": "2026-12-01",
       "depart_to": "2026-12-03",
       "scan_step_days": 1,
@@ -13,8 +15,10 @@
     {
       "origin": "AEP",
       "destination": "GIG",
-      "sources": ["google_flights"],
-      "threshold_usd": 600,
+      "sources": [
+        "google_flights"
+      ],
+      "threshold_usd": 400,
       "depart_from": "2026-12-01",
       "depart_to": "2026-12-03",
       "scan_step_days": 1,
@@ -23,8 +27,10 @@
     {
       "origin": "ROS",
       "destination": "GIG",
-      "sources": ["google_flights"],
-      "threshold_usd": 600,
+      "sources": [
+        "google_flights"
+      ],
+      "threshold_usd": 400,
       "depart_from": "2026-12-01",
       "depart_to": "2026-12-03",
       "scan_step_days": 1,
@@ -33,8 +39,10 @@
     {
       "origin": "COR",
       "destination": "GIG",
-      "sources": ["google_flights"],
-      "threshold_usd": 600,
+      "sources": [
+        "google_flights"
+      ],
+      "threshold_usd": 400,
       "depart_from": "2026-12-01",
       "depart_to": "2026-12-03",
       "scan_step_days": 1,
