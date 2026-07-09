@@ -19,7 +19,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from src.config import load_config
-from src.engine import run
+from src.engine import NoPricesError, run
 
 # Configurar logging con formato legible
 logging.basicConfig(
@@ -87,6 +87,10 @@ async def main(dry_run: bool = False, config_path: Path | None = None) -> None:
             "para evitar que GitHub Actions lo mate.",
             global_timeout_seconds // 60,
         )
+        sys.exit(1)
+    except NoPricesError:
+        # Ya se logueó y notificó en el engine; salir con error para que
+        # GitHub Actions marque el run en rojo (nada de verde con 0 precios).
         sys.exit(1)
     except Exception as e:
         logger.error("Error fatal en el engine: %s", e, exc_info=True)

@@ -66,7 +66,7 @@ DRY_RUN=true
 
 ## Paso 6: Configurar rutas y umbrales
 
-Editá `config/routes.json`:
+Editá `config/routes-rio.json`:
 
 - **origin/destination**: Códigos IATA de aeropuertos (ej: EZE, BCN, REC)
 - **sources**: Qué fuentes usar (`level`, `sky`, `google_flights`)
@@ -122,14 +122,14 @@ git push -u origin main
 
 ## Paso 11: ¡Listo!
 
-El bot va a ejecutarse automáticamente cada 6 horas. Si querés cambiar la frecuencia, editá el cron en `.github/workflows/check-prices.yml`:
+El bot va a ejecutarse automáticamente cada 12 horas. Si querés cambiar la frecuencia, editá el cron en `.github/workflows/check-rio.yml`:
 
 ```yaml
-# Cada 6 horas (default)
-- cron: '0 */6 * * *'
+# Cada 12 horas a las 03:00 y 15:00 UTC (default)
+- cron: '0 3,15 * * *'
 
-# Cada 12 horas
-- cron: '0 */12 * * *'
+# Cada 6 horas
+- cron: '0 */6 * * *'
 
 # Una vez al día a las 9 AM UTC (6 AM Argentina)
 - cron: '0 9 * * *'
@@ -139,12 +139,12 @@ El bot va a ejecutarse automáticamente cada 6 horas. Si querés cambiar la frec
 
 Cuando quieras actualizar el tipo de cambio USD/ARS:
 
-1. Editá `config/routes.json`
+1. Editá `config/routes-rio.json`
 2. Cambiá el valor de `manual_usd_to_ars`
 3. Commiteá y pusheá
 
 ```bash
-git add config/routes.json
+git add config/routes-rio.json
 git commit -m "Update USD/ARS exchange rate"
 git push
 ```

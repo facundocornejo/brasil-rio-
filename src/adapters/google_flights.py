@@ -1,10 +1,10 @@
 """Google Flights price adapter via fast-flights library.
 
-Usa la librería fast-flights para scrapear Google Flights. Cubre TODAS
+Usa la librería fast-flights (v3) para scrapear Google Flights. Cubre TODAS
 las aerolíneas en cualquier ruta. Funciona decodificando parámetros
-Protobuf de las URLs de Google Flights.
+Protobuf de las URLs de Google Flights y parseando los datos JS de la página.
 
-Install: pip install fast-flights
+Install: pip install "fast-flights>=3.0.2,<4"
 Docs: https://github.com/AWeirdDev/flights
 """
 
@@ -15,27 +15,26 @@ import re
 from datetime import date, timedelta
 
 from src.adapters.base import BaseAdapter
+from src.adapters.scan_dates import DEFAULT_DAYS_BETWEEN_SCANS, build_scan_dates
 from src.models import AppSettings, PriceResult, RouteConfig
 
 logger = logging.getLogger(__name__)
-
-# Escanear cada N días (compromiso entre cobertura y velocidad)
-DAYS_BETWEEN_SCANS = 7
 
 # Timeout por request en segundos (evita que se cuelgue indefinidamente)
 # Usa multiprocessing para poder matar el proceso de verdad
 REQUEST_TIMEOUT_SECONDS = 45
 
-# Modo de fetch: "common" es el más rápido y funciona en GitHub Actions
-# Si falla consistentemente, cambiar a "fallback" (usa Playwright serverless)
-FETCH_MODE = "common"
+# Moneda e idioma que le pedimos a Google explícitamente (v3 lo soporta).
+# Así los precios llegan siempre en USD y no hay que adivinar la moneda.
+QUERY_CURRENCY = "USD"
+QUERY_LANGUAGE = "en-US"
 
 
 def _parse_price(price_str: str | None) -> float | None:
-    """Parse price string from fast-flights to float.
+    """Parse price string to float.
 
-    fast-flights devuelve precios como strings tipo "$1,234", "ARS 500,000",
-    "€ 450", etc. Este parser extrae el número.
+    Fallback por si un precio llega como string tipo "$1,234", "ARS 500,000",
+    "€ 450", etc. (fast-flights v3 ya devuelve int). Este parser extrae el número.
 
     Ejemplos:
         "$1,234" → 1234.0
@@ -74,33 +73,14 @@ def _parse_price(price_str: str | None) -> float | None:
         return None
 
 
-def _parse_stops(stops_str: str | int | None) -> int:
-    """Parse stops from fast-flights to int.
-
-    fast-flights puede devolver "Nonstop", "1 stop", "2 stops", o un int.
-    """
-    if stops_str is None:
-        return 0
-    if isinstance(stops_str, int):
-        return stops_str
-
-    stops_lower = str(stops_str).lower()
-    if "nonstop" in stops_lower or "direct" in stops_lower:
-        return 0
-
-    # Buscar número en el string
-    match = re.search(r"(\d+)", str(stops_str))
-    return int(match.group(1)) if match else 0
-
-
 def _detect_currency(price_str: str | None) -> str:
     """Detect currency from price string.
 
-    Intenta detectar la moneda del precio según el símbolo o prefijo.
-    Por defecto asume USD para rutas internacionales desde Argentina.
+    Fallback para precios que llegan como string (v3 devuelve int y la moneda
+    la pedimos explícita con QUERY_CURRENCY). Detecta según símbolo o prefijo.
     """
     if not price_str:
-        return "USD"
+        return QUERY_CURRENCY
 
     price_upper = str(price_str).upper()
     if "ARS" in price_upper or "AR$" in price_upper:
@@ -108,7 +88,29 @@ def _detect_currency(price_str: str | None) -> str:
     if "€" in price_upper or "EUR" in price_upper:
         return "EUR"
     # USD es el default para Google Flights en rutas internacionales
-    return "USD"
+    return QUERY_CURRENCY
+
+
+def _serialize_flights(result: list, airline_names: dict[str, str]) -> list[dict]:
+    """Serialize fast-flights v3 Flights objects to plain dicts.
+
+    Convierte objetos Flights de la v3 a dicts simples para poder pasarlos
+    entre procesos (multiprocessing.Queue no banca objetos complejos).
+    Duck-typed a propósito: no importa fast_flights, así es testeable.
+    """
+    flights_data: list[dict] = []
+    for f in result:
+        # airlines viene como lista de códigos IATA; mapear a nombres si se puede
+        codes = list(f.airlines or [])
+        names = [airline_names.get(c, c) for c in codes]
+        # Escalas = segmentos del itinerario mostrado menos 1
+        segments = list(f.flights or [])
+        flights_data.append({
+            "name": ", ".join(names) if names else None,
+            "price": f.price,
+            "stops": max(len(segments) - 1, 0),
+        })
+    return flights_data
 
 
 def _fetch_in_subprocess(
@@ -117,51 +119,68 @@ def _fetch_in_subprocess(
     scan_date_iso: str,
     return_date_iso: str | None,
     trip: str,
-    fetch_mode: str,
     result_queue: multiprocessing.Queue,
 ) -> None:
     """Run get_flights in a separate process.
 
     Se ejecuta en un proceso hijo para poder matarlo de verdad si se cuelga.
     Los threads de Python no se pueden matar, pero los procesos sí.
+
+    Pone en la queue una tupla (status, data):
+    - ("ok", list[dict])   → precios encontrados
+    - ("empty", [])        → respuesta válida pero sin vuelos (no es error)
+    - ("error", str)       → falló la consulta
     """
     try:
-        from fast_flights import FlightData, Passengers, get_flights
+        from fast_flights import (
+            FlightQuery,
+            FlightsNotFound,
+            Passengers,
+            create_query,
+            get_flights,
+        )
 
-        flight_data_list = [
-            FlightData(
+        flight_queries = [
+            FlightQuery(
                 date=scan_date_iso,
                 from_airport=origin,
                 to_airport=destination,
             ),
         ]
         if return_date_iso:
-            flight_data_list.append(
-                FlightData(
+            flight_queries.append(
+                FlightQuery(
                     date=return_date_iso,
                     from_airport=destination,
                     to_airport=origin,
                 ),
             )
 
-        result = get_flights(
-            flight_data=flight_data_list,
+        query = create_query(
+            flights=flight_queries,
             trip=trip,
             seat="economy",
             passengers=Passengers(adults=1),
-            fetch_mode=fetch_mode,
+            currency=QUERY_CURRENCY,
+            language=QUERY_LANGUAGE,
         )
 
-        # Serializar resultados porque no podemos pasar objetos complejos entre procesos
-        flights_data = []
-        if result and result.flights:
-            for f in result.flights:
-                flights_data.append({
-                    "name": str(f.name) if f.name else None,
-                    "price": str(f.price) if f.price else None,
-                    "stops": str(f.stops) if f.stops is not None else None,
-                })
-        result_queue.put(("ok", flights_data))
+        try:
+            result = get_flights(query)
+        except FlightsNotFound:
+            # Google respondió bien pero no hay vuelos para esa fecha:
+            # es una respuesta válida, no un error de scraping.
+            result_queue.put(("empty", []))
+            return
+
+        # Mapeo código de aerolínea → nombre (viene en la metadata del resultado)
+        airline_names: dict[str, str] = {}
+        metadata = getattr(result, "metadata", None)
+        if metadata is not None:
+            airline_names = {a.code: a.name for a in metadata.airlines}
+
+        flights_data = _serialize_flights(result, airline_names)
+        result_queue.put(("ok", flights_data) if flights_data else ("empty", []))
     except Exception as e:
         result_queue.put(("error", str(e)))
 
@@ -186,11 +205,13 @@ class GoogleFlightsAdapter(BaseAdapter):
         scan_date: date,
         return_days: int,
         is_round_trip: bool,
-    ) -> list[dict]:
+    ) -> tuple[str, list[dict]]:
         """Fetch flights for a single date using a subprocess with hard timeout.
 
         Usa multiprocessing en vez de threads para poder matar el proceso
         si se cuelga (los threads de Python no se pueden matar).
+
+        Devuelve (status, data): status es "ok", "empty" o "error".
         """
         trip = "round-trip" if is_round_trip else "one-way"
         return_date_iso = None
@@ -206,7 +227,6 @@ class GoogleFlightsAdapter(BaseAdapter):
                 scan_date.isoformat(),
                 return_date_iso,
                 trip,
-                FETCH_MODE,
                 result_queue,
             ),
         )
@@ -227,7 +247,7 @@ class GoogleFlightsAdapter(BaseAdapter):
                 "Google Flights: timeout (%ds) en %s→%s fecha %s, salteando...",
                 REQUEST_TIMEOUT_SECONDS, route.origin, route.destination, scan_date,
             )
-            return []
+            return ("error", [])
         finally:
             # Asegurar que el proceso hijo no quede zombie
             if proc.is_alive():
@@ -240,58 +260,14 @@ class GoogleFlightsAdapter(BaseAdapter):
                 "Google Flights: error en %s→%s fecha %s: %s",
                 route.origin, route.destination, scan_date, data,
             )
-            return []
+            return ("error", [])
 
-        return data
+        return (status, data)
 
     @staticmethod
     def _build_scan_dates(route: RouteConfig, today: date) -> list[date]:
-        """Build the list of departure dates to scan for a route.
-
-        Dos modos:
-        - Ventana explícita: si la ruta tiene depart_from/depart_to, escanea
-          dentro de ese rango con el paso configurado (route.scan_step_days,
-          default DAYS_BETWEEN_SCANS), recortando al futuro (nunca antes de mañana).
-        - Clásico: months_ahead hacia adelante, filtrando por active_months.
-        """
-        dates: list[date] = []
-        start_floor = today + timedelta(days=1)  # Nunca escanear el pasado ni hoy
-        step = route.scan_step_days or DAYS_BETWEEN_SCANS  # Paso entre fechas
-
-        # === Modo ventana explícita ===
-        if route.depart_from or route.depart_to:
-            try:
-                win_start = (
-                    date.fromisoformat(route.depart_from)
-                    if route.depart_from
-                    else start_floor
-                )
-                win_end = (
-                    date.fromisoformat(route.depart_to)
-                    if route.depart_to
-                    else win_start + timedelta(days=route.months_ahead * 30)
-                )
-            except ValueError:
-                logger.warning(
-                    "Ventana de fechas inválida en %s→%s (depart_from=%s, depart_to=%s), "
-                    "usando modo clásico.",
-                    route.origin, route.destination, route.depart_from, route.depart_to,
-                )
-            else:
-                current = max(win_start, start_floor)
-                while current <= win_end:
-                    dates.append(current)
-                    current += timedelta(days=step)
-                return dates
-
-        # === Modo clásico: months_ahead + active_months ===
-        total_days = route.months_ahead * 30
-        current = start_floor
-        while (current - today).days <= total_days:
-            if not route.active_months or current.month in route.active_months:
-                dates.append(current)
-            current += timedelta(days=step)
-        return dates
+        """Build the list of departure dates to scan (delegado al helper compartido)."""
+        return build_scan_dates(route, today, DEFAULT_DAYS_BETWEEN_SCANS)
 
     async def fetch_prices(self, route: RouteConfig) -> list[PriceResult]:
         """Fetch prices from Google Flights for specific dates.
@@ -306,7 +282,7 @@ class GoogleFlightsAdapter(BaseAdapter):
             if self._available:
                 logger.error(
                     "fast-flights no está instalado. "
-                    "Ejecutá: pip install fast-flights"
+                    'Ejecutá: pip install "fast-flights>=3.0.2,<4"'
                 )
                 self._available = False
             return []
@@ -359,22 +335,30 @@ class GoogleFlightsAdapter(BaseAdapter):
                 break
 
             try:
-                flights_data = await self._fetch_single_date(
+                status, flights_data = await self._fetch_single_date(
                     route, scan_date, return_days, is_round_trip,
                 )
 
-                if not flights_data:
+                # Solo los errores reales suman al contador de fallos.
+                # "empty" (sin vuelos para la fecha) es una respuesta sana.
+                if status == "error":
                     self._consecutive_failures += 1
                 else:
                     self._consecutive_failures = 0
 
                 # Parsear cada vuelo encontrado
                 for flight in flights_data:
-                    price = _parse_price(flight.get("price"))
+                    raw_price = flight.get("price")
+                    if isinstance(raw_price, (int, float)):
+                        # v3 devuelve el precio como número, en QUERY_CURRENCY
+                        price: float | None = float(raw_price)
+                        currency = QUERY_CURRENCY
+                    else:
+                        # Fallback defensivo por si llega como string
+                        price = _parse_price(raw_price)
+                        currency = _detect_currency(raw_price)
                     if price is None:
                         continue
-
-                    currency = _detect_currency(flight.get("price"))
 
                     # Formatear fecha con duración del viaje
                     date_display = scan_date.isoformat()
@@ -391,7 +375,7 @@ class GoogleFlightsAdapter(BaseAdapter):
                             date=date_display,
                             price=price,
                             currency=currency,
-                            stops=_parse_stops(flight.get("stops")),
+                            stops=int(flight.get("stops") or 0),
                         )
                     )
 

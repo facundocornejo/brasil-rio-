@@ -24,14 +24,14 @@ Combiné ambos enfoques: APIs directas donde es posible, Google Flights como fal
 ## Qué aprendí
 
 - **Ingeniería inversa de APIs** — usar DevTools para interceptar requests y entender cómo funcionan servicios sin documentación pública
-- **Automatización con GitHub Actions** — configurar workflows que corren scripts automáticamente cada 6 horas, sin servidor propio ni costos
+- **Automatización con GitHub Actions** — configurar workflows que corren scripts automáticamente cada 12 horas, sin servidor propio ni costos
 - **Python async** — usar `httpx` y `asyncio` para hacer múltiples requests en paralelo
 - **Arquitectura de adaptadores** — diseñar código extensible donde agregar una nueva aerolínea es crear un solo archivo
 - **Persistencia de estado** — evitar alertas duplicadas guardando historial entre ejecuciones
 
 ## Qué hace
 
-El bot automatiza todo el proceso: consulta tres fuentes de datos cada 6 horas, compara precios contra tus umbrales configurados, y te envía una notificación por Telegram en el momento que un vuelo baja del precio objetivo — incluyendo detalles como aerolínea, escalas, asientos disponibles, y si es el día más barato del mes.
+El bot automatiza todo el proceso: consulta tres fuentes de datos cada 12 horas, compara precios contra tus umbrales configurados, y te envía una notificación por Telegram en el momento que un vuelo baja del precio objetivo — incluyendo detalles como aerolínea, escalas, asientos disponibles, y si es el día más barato del mes.
 
 ## Features
 
@@ -139,7 +139,7 @@ cp .env.example .env
 # Edit .env with your Telegram token and chat ID
 ```
 
-Edit `config/routes.json` to set your routes, thresholds, and exchange rate.
+Edit `config/routes-rio.json` to set your routes, thresholds, and exchange rate.
 
 ### 4. Test Locally
 ```bash

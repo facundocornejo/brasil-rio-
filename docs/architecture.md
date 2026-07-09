@@ -9,7 +9,7 @@ GitHub Actions Cron (every 6 hours)
    src/main.py (entry point)
         │
         ▼
-   src/config.py (load routes.json)
+   src/config.py (load routes-rio.json)
         │
         ▼
    src/engine.py (orchestration)

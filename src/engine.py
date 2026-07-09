@@ -8,10 +8,7 @@ Es el "cerebro" del bot.
 import asyncio
 import logging
 
-# Límite de rutas procesadas en paralelo (evita rate-limiting de Google)
-MAX_CONCURRENT_ROUTES = 2
-
-from src.adapters import GoogleFlightsAdapter, LevelAdapter, SkyAdapter
+from src.adapters import AmadeusAdapter, GoogleFlightsAdapter, LevelAdapter, SkyAdapter
 from src.adapters.base import BaseAdapter
 from src.checker import check_prices
 from src.history import save_alerts_to_history
@@ -20,6 +17,18 @@ from src.notifier import print_alert, send_alert, send_error_alert
 from src.state import AlertStateManager
 
 logger = logging.getLogger(__name__)
+
+# Límite de rutas procesadas en paralelo (evita rate-limiting de Google)
+MAX_CONCURRENT_ROUTES = 2
+
+
+class NoPricesError(RuntimeError):
+    """Raised when a run collects zero prices across all routes.
+
+    Señal de que TODAS las fuentes fallaron (ej: librería de scraping rota).
+    Hace que el proceso termine con exit != 0 para que GitHub Actions marque
+    el run en rojo, en vez de quedar verde con el bot roto en silencio.
+    """
 
 
 async def run(
@@ -55,6 +64,7 @@ async def run(
         "level": LevelAdapter(settings),
         "sky": SkyAdapter(settings),
         "google_flights": GoogleFlightsAdapter(settings),
+        "amadeus": AmadeusAdapter(settings),
     }
 
     # === Paso 1: Recolectar precios de todas las fuentes (en paralelo con límite) ===
@@ -96,6 +106,20 @@ async def run(
         all_results.extend(route_results)
 
     logger.info("Total de precios recolectados: %d", len(all_results))
+
+    # === Guard anti-fallo-silencioso: 0 precios con rutas configuradas ===
+    # Si ninguna fuente devolvió nada, algo está roto (ej: cambio de API de
+    # una librería). Avisar por Telegram y fallar el run para que se note.
+    if routes and not all_results:
+        error_msg = (
+            "El bot no obtuvo NINGÚN precio en esta corrida "
+            f"({len(routes)} rutas configuradas). Alguna fuente está rota — "
+            "revisá los logs del workflow en GitHub Actions."
+        )
+        logger.error(error_msg)
+        if not dry_run and telegram_token and telegram_chat_id:
+            await send_error_alert(telegram_token, telegram_chat_id, error_msg)
+        raise NoPricesError(error_msg)
 
     # === Paso 2: Filtrar por umbrales ===
     alerts = check_prices(all_results, routes, settings)

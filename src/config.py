@@ -13,7 +13,7 @@ from src.models import AppSettings, RouteConfig
 logger = logging.getLogger(__name__)
 
 # Fuentes válidas que tienen adapter implementado
-VALID_SOURCES = {"level", "sky", "google_flights"}
+VALID_SOURCES = {"level", "sky", "google_flights", "amadeus"}
 
 # Ruta al archivo de configuración (relativa a la raíz del proyecto)
 CONFIG_PATH = Path(__file__).parent.parent / "config" / "routes.json"

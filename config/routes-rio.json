@@ -4,7 +4,8 @@
       "origin": "EZE",
       "destination": "GIG",
       "sources": [
-        "google_flights"
+        "google_flights",
+        "amadeus"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
@@ -16,7 +17,8 @@
       "origin": "AEP",
       "destination": "GIG",
       "sources": [
-        "google_flights"
+        "google_flights",
+        "amadeus"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
@@ -28,7 +30,8 @@
       "origin": "ROS",
       "destination": "GIG",
       "sources": [
-        "google_flights"
+        "google_flights",
+        "amadeus"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
@@ -40,7 +43,8 @@
       "origin": "COR",
       "destination": "GIG",
       "sources": [
-        "google_flights"
+        "google_flights",
+        "amadeus"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
