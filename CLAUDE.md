@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Estado actual (09/07/2026)
+
+Bot **reparado y verificado en producción** tras 3.5 semanas de outage silencioso
+(fast-flights 3.0 rompió la API; detalle completo en `AUDITORIA.md`). Migrado a
+fast-flights v3, deps pinneadas con techo, y guard anti-fallo-silencioso: 0 precios
+→ alerta Telegram + exit 1. Run verificado: 178 precios, 12 alertas reales.
+
+- **Siguiente paso**: activar Amadeus como 2ª fuente — el adapter ya está hecho
+  (`src/adapters/amadeus.py`), falta que Facu se registre en developers.amadeus.com
+  y cargue `AMADEUS_CLIENT_ID`/`AMADEUS_CLIENT_SECRET` como secrets de GitHub
+  (no hay credenciales previas en ningún .env de B:). Pasos en `AUDITORIA.md`.
+- Pendientes menores en `tasks/todo.md` (scripts sueltos rotos, dashboard).
+
 ## Model usage (Opus 4.6 / Sonnet 4.6 solamente)
 - Default: **Sonnet 4.6** (`claude-sonnet-4-6`) — edits de código, tests, scripts, refactors chicos, ejecutar comandos, lectura/grep de código.
 - Escalar a **Opus 4.6** (`/model claude-opus-4-6`) solo para: planning no-trivial, diseño arquitectónico, debugging no-obvio, decisiones de diseño.

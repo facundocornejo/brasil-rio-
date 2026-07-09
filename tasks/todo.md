@@ -8,8 +8,9 @@ adapter de Amadeus listo (esperando credenciales). Ver `AUDITORIA.md` para el de
 ## Pendiente
 
 - [ ] **Facu**: crear cuenta en developers.amadeus.com y cargar secrets
-      `AMADEUS_CLIENT_ID` / `AMADEUS_CLIENT_SECRET` en GitHub (pasos en AUDITORIA.md §Amadeus)
-- [ ] Verificar el primer run programado de Actions tras el fix (viene verde CON precios)
+      `AMADEUS_CLIENT_ID` / `AMADEUS_CLIENT_SECRET` en GitHub (pasos en AUDITORIA.md §Amadeus).
+      Nota 09/07: se buscó en todos los .env de B:\ y NO hay credenciales previas —
+      hay que registrarse de cero
 - [ ] Decidir qué hacer con los scripts sueltos rotos (`find_cheap.py`,
       `show_cheapest.py`, `send_top4.py`) — ver AUDITORIA.md hallazgo #1
 - [ ] Opcional: timestamp de último run en el dashboard (hallazgo #5)
@@ -24,3 +25,5 @@ adapter de Amadeus listo (esperando credenciales). Ver `AUDITORIA.md` para el de
 - [x] requirements-dev.txt separado
 - [x] Docs/dashboard actualizados (12h, routes-rio.json, link del repo)
 - [x] Verificación real: dry-run con 153 precios, alertas COR→GIG USD 340
+- [x] Run de producción verificado (28990559942): verde, 178 precios, 12 alertas
+      reales enviadas a Telegram
