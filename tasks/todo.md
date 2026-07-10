@@ -1,24 +1,40 @@
 # TODO — Bot pasajes Río
 
-## Estado actual (08/07/2026)
+## Estado actual (10/07/2026)
 
-Bot **reparado y verificado**: migrado a fast-flights v3, guard anti-fallo-silencioso,
-adapter de Amadeus listo (esperando credenciales). Ver `AUDITORIA.md` para el detalle.
+Bot operativo con **doble fuente**: Google Flights (en vivo) + Travelpayouts/Aviasales
+(cache, señal de tendencia). Amadeus muerto (portal cerrado). Ver CLAUDE.md §Estado.
 
 ## Pendiente
 
+- [ ] **Verificar el próximo run de Actions de Río** (cron 03:00/15:00 UTC): que salga
+      verde y el log muestre `travelpayouts: N precios` (el dispatch manual de Facu
+      no llegó a ejecutarse; Recife ya quedó verificado en producción)
 - [ ] Decidir qué hacer con los scripts sueltos rotos (`find_cheap.py`,
       `show_cheapest.py`, `send_top4.py`) — ver AUDITORIA.md hallazgo #1
 - [ ] Opcional: timestamp de último run en el dashboard (hallazgo #5)
-- [ ] Verificar adapter Travelpayouts contra la API real (token ya cargado como
-      secret; falta run en vivo) y después run de producción en Actions
+
+## Hecho (10/07/2026)
+
+- [x] Confirmado cierre de Amadeus self-service (17/07/2026, registros ya pausados)
+      → adapter queda como código muerto documentado
+- [x] Cuenta de Travelpayouts creada + Drive verificado en el dashboard (snippet
+      en docs/index.html, commit b3c9e16)
+- [x] Adapter Travelpayouts (`src/adapters/travelpayouts.py`) + 10 tests, commits
+      9e893f7 y ab5fbd0. Filtro de duración ESTRICTO acá (decisión de Facu)
+- [x] Fix: `travelpayouts` faltaba en VALID_SOURCES (descarte silencioso)
+- [x] Fix semántica: el cache filtra por ventana de ruta, no por paso de escaneo
+      (`departure_in_window` en scan_dates.py)
+- [x] Verificado en vivo: moneda USD OK, EZE→GIG dic tiene ofertas USD 272-286
+      pero con vueltas de ~14 días (estricto → 0 resultados hoy, esperado)
+- [x] Port completo al bot de Recife (flightbot f782aa7, modo RELAJADO) +
+      secret cargado + **verificado en producción**: 567 precios, 13 alertas
+      reales a Telegram (incl. AEP→REC USD 330 directo detectado por Travelpayouts)
 
 ## Cerrado sin hacer (10/07/2026)
 
-- [x] ~~Amadeus como 2ª fuente~~ — **INVIABLE**: Amadeus decomisiona el portal
-      self-service el 17/07/2026 y los registros nuevos estaban pausados desde
-      ~marzo 2026; no se puede crear cuenta. El adapter queda como código muerto
-      documentado (`src/adapters/amadeus.py`). Ver AUDITORIA.md §Amadeus
+- [x] ~~Amadeus como 2ª fuente~~ — **INVIABLE**: portal self-service decomisionado
+      el 17/07/2026, registros pausados desde ~marzo 2026. Ver AUDITORIA.md §Amadeus
 
 ## Hecho (08/07/2026)
 

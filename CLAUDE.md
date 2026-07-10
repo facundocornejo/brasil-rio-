@@ -2,21 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Estado actual (10/07/2026)
+## Estado actual (10/07/2026, cierre de sesión)
 
-Bot **reparado y verificado en producción** tras 3.5 semanas de outage silencioso
-(fast-flights 3.0 rompió la API; detalle completo en `AUDITORIA.md`). Migrado a
-fast-flights v3, deps pinneadas con techo, y guard anti-fallo-silencioso: 0 precios
-→ alerta Telegram + exit 1. Run verificado: 178 precios, 12 alertas reales.
+Bot operativo con **doble fuente**: Google Flights en vivo (fast-flights v3, fuente
+principal de alertas) + **Travelpayouts/Aviasales Data API** (precios cacheados de
+búsquedas reales, señal de tendencia y red de seguridad). Guard anti-fallo-silencioso
+activo. Historia del outage de junio en `AUDITORIA.md`.
 
-- **Amadeus como 2ª fuente: MUERTO** (10/07/2026): Amadeus decomisiona el portal
-  self-service el 17/07/2026 y los registros nuevos estaban pausados desde ~marzo
-  2026 — no se puede crear cuenta. El adapter `src/adapters/amadeus.py` queda como
-  código muerto documentado. Detalle en `AUDITORIA.md` §Amadeus.
-- **Nueva 2ª fuente: Travelpayouts/Aviasales Data API** (`src/adapters/travelpayouts.py`,
-  10/07/2026): precios cacheados de búsquedas reales (48h). Requiere secret
-  `TRAVELPAYOUTS_TOKEN` (ya cargado en GitHub). Reemplazó a `amadeus` en las
-  4 rutas de `config/routes-rio.json`.
+- **Travelpayouts** (`src/adapters/travelpayouts.py`, commits 9e893f7 + ab5fbd0):
+  token por cuenta en secret `TRAVELPAYOUTS_TOKEN` (GitHub + `.env` local). Filtro
+  de duración **ESTRICTO** acá (5-7 días, decisión de Facu) — hoy da 0 resultados
+  para dic (el cache solo tiene vueltas de ~14 días) y eso es esperado, no un bug.
+  El flag `travelpayouts_match_trip_duration` (settings del JSON) lo controla.
+- **Falta verificar**: el próximo run de Actions de este repo con Travelpayouts
+  activo (el cron corre 03:00/15:00 UTC). Recife ya quedó verificado en producción.
+- **Amadeus: MUERTO** — portal self-service decomisionado el 17/07/2026; el adapter
+  queda como código muerto documentado. Detalle en `AUDITORIA.md` §Amadeus.
+- **Clon de Recife (flightbot)**: port completo pusheado (f782aa7) en modo RELAJADO
+  y verificado en producción (567 precios, 13 alertas, incl. AEP→REC USD 330).
 - Pendientes menores en `tasks/todo.md` (scripts sueltos rotos, dashboard).
 
 ## Model usage (Opus 4.6 / Sonnet 4.6 solamente)
