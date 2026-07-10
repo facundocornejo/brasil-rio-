@@ -2,17 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Estado actual (09/07/2026)
+## Estado actual (10/07/2026)
 
 Bot **reparado y verificado en producción** tras 3.5 semanas de outage silencioso
 (fast-flights 3.0 rompió la API; detalle completo en `AUDITORIA.md`). Migrado a
 fast-flights v3, deps pinneadas con techo, y guard anti-fallo-silencioso: 0 precios
 → alerta Telegram + exit 1. Run verificado: 178 precios, 12 alertas reales.
 
-- **Siguiente paso**: activar Amadeus como 2ª fuente — el adapter ya está hecho
-  (`src/adapters/amadeus.py`), falta que Facu se registre en developers.amadeus.com
-  y cargue `AMADEUS_CLIENT_ID`/`AMADEUS_CLIENT_SECRET` como secrets de GitHub
-  (no hay credenciales previas en ningún .env de B:). Pasos en `AUDITORIA.md`.
+- **Amadeus como 2ª fuente: MUERTO** (10/07/2026): Amadeus decomisiona el portal
+  self-service el 17/07/2026 y los registros nuevos estaban pausados desde ~marzo
+  2026 — no se puede crear cuenta. El adapter `src/adapters/amadeus.py` queda como
+  código muerto documentado. Detalle en `AUDITORIA.md` §Amadeus.
+- **Nueva 2ª fuente: Travelpayouts/Aviasales Data API** (`src/adapters/travelpayouts.py`,
+  10/07/2026): precios cacheados de búsquedas reales (48h). Requiere secret
+  `TRAVELPAYOUTS_TOKEN` (ya cargado en GitHub). Reemplazó a `amadeus` en las
+  4 rutas de `config/routes-rio.json`.
 - Pendientes menores en `tasks/todo.md` (scripts sueltos rotos, dashboard).
 
 ## Model usage (Opus 4.6 / Sonnet 4.6 solamente)
@@ -53,6 +57,8 @@ Adapter pattern: each data source has its own module in `src/adapters/` returnin
 1. **Level Airlines** — GET, no auth, returns USD prices for Europe routes
 2. **Sky Airline** — POST, public API key (Azure APIM), returns ARS prices for regional routes
 3. **Google Flights** — via `fast-flights` library, covers all airlines worldwide
+4. **Travelpayouts / Aviasales Data API** — GET, token auth (`TRAVELPAYOUTS_TOKEN`), cached prices from real user searches (48h window); trend signal + safety net, not live prices
+5. ~~**Amadeus**~~ — dead code (`src/adapters/amadeus.py`): self-service portal decommissioned 2026-07-17, kept as reference
 
 ## Testing a Single Adapter
 ```bash

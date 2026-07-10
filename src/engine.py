@@ -8,7 +8,13 @@ Es el "cerebro" del bot.
 import asyncio
 import logging
 
-from src.adapters import AmadeusAdapter, GoogleFlightsAdapter, LevelAdapter, SkyAdapter
+from src.adapters import (
+    AmadeusAdapter,
+    GoogleFlightsAdapter,
+    LevelAdapter,
+    SkyAdapter,
+    TravelpayoutsAdapter,
+)
 from src.adapters.base import BaseAdapter
 from src.checker import check_prices
 from src.history import save_alerts_to_history
@@ -65,6 +71,7 @@ async def run(
         "sky": SkyAdapter(settings),
         "google_flights": GoogleFlightsAdapter(settings),
         "amadeus": AmadeusAdapter(settings),
+        "travelpayouts": TravelpayoutsAdapter(settings),
     }
 
     # === Paso 1: Recolectar precios de todas las fuentes (en paralelo con límite) ===

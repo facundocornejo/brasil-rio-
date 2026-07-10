@@ -7,13 +7,18 @@ adapter de Amadeus listo (esperando credenciales). Ver `AUDITORIA.md` para el de
 
 ## Pendiente
 
-- [ ] **Facu**: crear cuenta en developers.amadeus.com y cargar secrets
-      `AMADEUS_CLIENT_ID` / `AMADEUS_CLIENT_SECRET` en GitHub (pasos en AUDITORIA.md §Amadeus).
-      Nota 09/07: se buscó en todos los .env de B:\ y NO hay credenciales previas —
-      hay que registrarse de cero
 - [ ] Decidir qué hacer con los scripts sueltos rotos (`find_cheap.py`,
       `show_cheapest.py`, `send_top4.py`) — ver AUDITORIA.md hallazgo #1
 - [ ] Opcional: timestamp de último run en el dashboard (hallazgo #5)
+- [ ] Verificar adapter Travelpayouts contra la API real (token ya cargado como
+      secret; falta run en vivo) y después run de producción en Actions
+
+## Cerrado sin hacer (10/07/2026)
+
+- [x] ~~Amadeus como 2ª fuente~~ — **INVIABLE**: Amadeus decomisiona el portal
+      self-service el 17/07/2026 y los registros nuevos estaban pausados desde
+      ~marzo 2026; no se puede crear cuenta. El adapter queda como código muerto
+      documentado (`src/adapters/amadeus.py`). Ver AUDITORIA.md §Amadeus
 
 ## Hecho (08/07/2026)
 

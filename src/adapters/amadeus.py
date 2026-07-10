@@ -1,9 +1,16 @@
 """Amadeus Self-Service API price adapter.
 
+**MUERTO — no activable (10/07/2026).** Amadeus decomisionó el portal
+self-service el 17/07/2026: las API keys self-service quedaron deshabilitadas
+y los registros nuevos estaban pausados desde ~marzo 2026, así que nunca se
+pudieron obtener credenciales. Solo sobreviven las Enterprise APIs (contrato
+comercial). Se conserva como referencia de implementación de un adapter con
+OAuth2 + rate limiting por si aparece una fuente equivalente.
+
 API real de Amadeus (sin scraping): Flight Offers Search. Cubre las
 aerolíneas que operan AR→BR (GOL, LATAM, Aerolíneas, JetSmart, Flybondi).
 
-Requiere credenciales gratuitas de https://developers.amadeus.com:
+Requería credenciales de https://developers.amadeus.com (ya no disponibles):
 - AMADEUS_CLIENT_ID / AMADEUS_CLIENT_SECRET (env vars o GitHub secrets)
 - AMADEUS_ENV: "test" (default, entorno de prueba) o "production"
 

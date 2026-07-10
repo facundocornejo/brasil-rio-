@@ -65,21 +65,18 @@ datos (pendiente de credenciales).
 | 4 | P3 | `config.py` defaultea a `config/routes.json` inexistente: `python -m src.main` sin `--config` falla | Cambiar el default a `routes-rio.json` o documentarlo |
 | 5 | P3 | El dashboard (`docs/index.html`) muestra el historial pero no hay señal de "bot roto" (el archivo simplemente deja de actualizarse) | Con el guard nuevo el fallo ya es ruidoso por Telegram/mail; opcional: timestamp de último run en el dashboard |
 
-## Segunda fuente: Amadeus (implementada, falta activarla)
+## Segunda fuente: Amadeus (MUERTA — portal self-service decomisionado)
 
-Adapter completo en `src/adapters/amadeus.py`, registrado en el engine y en las
-4 rutas. **Hasta que cargues credenciales, se saltea con un log claro y no
-molesta.** Para activarlo:
+**Actualización 10/07/2026**: el plan de activar Amadeus quedó inviable.
+Amadeus anunció en febrero 2026 el cierre del portal self-service de
+developers: los registros nuevos se pausaron ~marzo 2026 y el **17/07/2026**
+se deshabilitan todas las API keys self-service. Solo sobreviven las
+Enterprise APIs (contrato comercial), que no aplican para un bot personal
+gratis. Fuente: [PhocusWire](https://www.phocuswire.com/amadeus-shut-down-self-service-apis-portal-developers).
 
-1. Crear cuenta gratis en <https://developers.amadeus.com> → *Create New App* →
-   copiás **API Key** (client id) y **API Secret**.
-2. En GitHub: repo → Settings → Secrets and variables → Actions → New repository
-   secret: `AMADEUS_CLIENT_ID` y `AMADEUS_CLIENT_SECRET`.
-3. (Opcional) Variable `AMADEUS_ENV=production` para datos reales. El default es
-   `test`: gratis pero con datos de prueba y cuota mensual chica (~2.000 llamadas;
-   ojo: el bot hace ~2.160/mes con la config actual — si la cuota muerde, subí
-   `scan_step_days` o bajá la frecuencia del cron).
-4. Local: agregar las mismas variables al `.env`.
+El adapter `src/adapters/amadeus.py` **se conserva como código muerto
+documentado** (referencia de OAuth2 + rate limiting por si aparece una fuente
+equivalente). Sin credenciales se saltea con un log claro y no molesta.
 
 ## Otros conectores evaluados (y por qué no)
 

@@ -13,7 +13,7 @@ from src.models import AppSettings, RouteConfig
 logger = logging.getLogger(__name__)
 
 # Fuentes válidas que tienen adapter implementado
-VALID_SOURCES = {"level", "sky", "google_flights", "amadeus"}
+VALID_SOURCES = {"level", "sky", "google_flights", "amadeus", "travelpayouts"}
 
 # Ruta al archivo de configuración (relativa a la raíz del proyecto)
 CONFIG_PATH = Path(__file__).parent.parent / "config" / "routes.json"
@@ -139,4 +139,7 @@ def _parse_settings(raw: dict) -> AppSettings:
         manual_usd_to_ars=float(raw.get("manual_usd_to_ars", 1200.0)),
         trip_duration_min_days=int(raw.get("trip_duration_min_days", 7)),
         trip_duration_max_days=int(raw.get("trip_duration_max_days", 10)),
+        travelpayouts_match_trip_duration=bool(
+            raw.get("travelpayouts_match_trip_duration", True)
+        ),
     )

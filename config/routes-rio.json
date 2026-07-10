@@ -5,7 +5,7 @@
       "destination": "GIG",
       "sources": [
         "google_flights",
-        "amadeus"
+        "travelpayouts"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
@@ -18,7 +18,7 @@
       "destination": "GIG",
       "sources": [
         "google_flights",
-        "amadeus"
+        "travelpayouts"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
@@ -31,7 +31,7 @@
       "destination": "GIG",
       "sources": [
         "google_flights",
-        "amadeus"
+        "travelpayouts"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
@@ -44,7 +44,7 @@
       "destination": "GIG",
       "sources": [
         "google_flights",
-        "amadeus"
+        "travelpayouts"
       ],
       "threshold_usd": 400,
       "depart_from": "2026-12-01",
