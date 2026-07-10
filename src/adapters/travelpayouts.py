@@ -20,12 +20,12 @@ Si no hay token configurado, el adapter se saltea con un log claro
 import asyncio
 import logging
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import httpx
 
 from src.adapters.base import BaseAdapter
-from src.adapters.scan_dates import DEFAULT_DAYS_BETWEEN_SCANS, build_scan_dates
+from src.adapters.scan_dates import departure_in_window
 from src.models import AppSettings, PriceResult, RouteConfig
 
 logger = logging.getLogger(__name__)
@@ -138,7 +138,7 @@ class TravelpayoutsAdapter(BaseAdapter):
         self,
         ticket: dict,
         route: RouteConfig,
-        valid_departures: set[date],
+        today: date,
         is_round_trip: bool,
     ) -> PriceResult | None:
         """Map a raw cached ticket to a PriceResult, filtering by scan window.
@@ -159,9 +159,11 @@ class TravelpayoutsAdapter(BaseAdapter):
             logger.debug("Travelpayouts: ticket con formato inesperado, salteado: %s", e)
             return None
 
-        # El cache devuelve el mes entero: quedarse solo con las salidas que
-        # el bot escanea (ventana explícita o months_ahead/active_months).
-        if depart not in valid_departures:
+        # El cache devuelve el mes entero: quedarse solo con las salidas
+        # dentro de la ventana de la ruta. A diferencia de Google Flights,
+        # acá NO aplica el paso de escaneo (el cache es gratis y cualquier
+        # fecha del rango es señal válida).
+        if not departure_in_window(route, depart, today):
             return None
 
         if is_round_trip:
@@ -216,12 +218,31 @@ class TravelpayoutsAdapter(BaseAdapter):
             return []
 
         today = date.today()
-        valid_departures = set(build_scan_dates(route, today, DEFAULT_DAYS_BETWEEN_SCANS))
-        if not valid_departures:
+        # Meses a consultar: recorrer la ventana día por día (es barato) y
+        # quedarse con los meses que tienen al menos una salida válida.
+        # Un request por mes cubre todas las fechas de ese mes.
+        start = today + timedelta(days=1)
+        horizon = today + timedelta(days=route.months_ahead * 30 + 1)
+        # La ventana explícita manda sobre months_ahead (igual que build_scan_dates)
+        if route.depart_from:
+            try:
+                start = max(start, date.fromisoformat(route.depart_from))
+            except ValueError:
+                pass
+        if route.depart_to:
+            try:
+                horizon = max(horizon, date.fromisoformat(route.depart_to))
+            except ValueError:
+                pass
+        months_set: set[str] = set()
+        current = start
+        while current <= horizon:
+            if departure_in_window(route, current, today):
+                months_set.add(current.strftime("%Y-%m"))
+            current += timedelta(days=1)
+        months = sorted(months_set)
+        if not months:
             return []
-
-        # Un request por mes de salida cubre todas las fechas de ese mes
-        months = sorted({d.strftime("%Y-%m") for d in valid_departures})
         is_round_trip = route.trip_type == "round_trip"
 
         logger.info(
@@ -251,7 +272,7 @@ class TravelpayoutsAdapter(BaseAdapter):
 
                 for ticket in tickets:
                     result = self._ticket_to_result(
-                        ticket, route, valid_departures, is_round_trip,
+                        ticket, route, today, is_round_trip,
                     )
                     if result is not None:
                         results.append(result)

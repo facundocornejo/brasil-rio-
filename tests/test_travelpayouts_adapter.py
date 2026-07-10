@@ -142,6 +142,27 @@ async def test_filters_trip_duration(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_accepts_departures_off_scan_step(monkeypatch):
+    """El paso de escaneo NO filtra al cache: cualquier salida en ventana vale.
+
+    Con scan_step_days=7 y ventana 1-14 dic, Google solo consultaría el 1 y
+    el 8 — pero una oferta cacheada que sale el 5 es señal válida igual.
+    """
+    off_step = dict(MOCK_TICKET, departure_at="2099-12-05T07:00:00-03:00",
+                    return_at="2099-12-10T14:30:00-03:00")  # 5 días
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=_make_response([off_step]))
+
+    adapter = _make_adapter(monkeypatch, httpx.MockTransport(handler))
+    route = _make_route(depart_to="2099-12-14", scan_step_days=7)
+    results = await adapter.fetch_prices(route)
+
+    assert len(results) == 1
+    assert results[0].date == "2099-12-05 → 2099-12-10"
+
+
+@pytest.mark.asyncio
 async def test_relaxed_duration_mode(monkeypatch):
     """Con travelpayouts_match_trip_duration=False acepta cualquier vuelta."""
     long_trip = dict(MOCK_TICKET, return_at="2099-12-16T14:30:00-03:00")  # 15 días
@@ -220,6 +241,6 @@ def test_malformed_ticket_is_skipped(monkeypatch):
     adapter = _make_adapter(monkeypatch, transport=None)
     bad_ticket = {"airline": "G3"}  # sin price ni departure_at
     result = adapter._ticket_to_result(
-        bad_ticket, _make_route(), {date(2099, 12, 1)}, True,
+        bad_ticket, _make_route(), date(2099, 11, 30), True,
     )
     assert result is None

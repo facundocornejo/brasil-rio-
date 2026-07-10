@@ -66,3 +66,38 @@ def build_scan_dates(
             dates.append(current)
         current += timedelta(days=step)
     return dates
+
+
+def departure_in_window(route: RouteConfig, depart: date, today: date) -> bool:
+    """Check whether a departure date falls inside the route's window.
+
+    Mismas reglas que build_scan_dates pero SIN el paso de escaneo: lo usan
+    las fuentes cacheadas (Travelpayouts), donde el paso no aplica — el paso
+    existe para ahorrar requests caros, pero el cache trae el mes entero y
+    cualquier salida dentro del rango es una señal válida.
+    """
+    if depart <= today:  # Nunca el pasado ni hoy
+        return False
+
+    # === Modo ventana explícita ===
+    if route.depart_from or route.depart_to:
+        try:
+            win_start = (
+                date.fromisoformat(route.depart_from) if route.depart_from else None
+            )
+            win_end = (
+                date.fromisoformat(route.depart_to) if route.depart_to else None
+            )
+        except ValueError:
+            pass  # Ventana inválida: caer al modo clásico (igual que build_scan_dates)
+        else:
+            if win_start is not None and depart < win_start:
+                return False
+            if win_end is not None and depart > win_end:
+                return False
+            return True
+
+    # === Modo clásico: months_ahead + active_months ===
+    if (depart - today).days > route.months_ahead * 30:
+        return False
+    return not route.active_months or depart.month in route.active_months
