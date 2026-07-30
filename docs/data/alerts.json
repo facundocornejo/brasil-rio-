@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-29T16:16:05.401771+00:00",
+  "last_updated": "2026-07-30T05:31:19.359616+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -5810,6 +5810,136 @@
       "stops": 1,
       "fetched_at": "2026-07-29T16:15:26.428053+00:00",
       "route_key": "AEP-GIG-2026-12-03 → 2026-12-09",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 316.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-07-30T05:30:12.574661+00:00",
+      "route_key": "EZE-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-07",
+      "price": 341.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-07-30T05:30:16.020452+00:00",
+      "route_key": "EZE-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-09",
+      "price": 364.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-07-30T05:30:36.679237+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-09",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 316.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-07-30T05:30:40.147344+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-07",
+      "price": 347.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-07-30T05:30:16.253424+00:00",
+      "route_key": "AEP-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "Gol",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-02 → 2026-12-07",
+      "price": 340.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-07-30T05:30:23.159004+00:00",
+      "route_key": "AEP-GIG-2026-12-02 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "Gol",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 354.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-07-30T05:30:40.564965+00:00",
+      "route_key": "AEP-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "COR",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 321.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-07-30T05:30:44.014271+00:00",
+      "route_key": "COR-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "COR",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-07",
+      "price": 334.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-07-30T05:30:47.455521+00:00",
+      "route_key": "COR-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "Aerolineas Argentinas, LATAM",
+      "origin": "COR",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 385.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-07-30T05:31:11.743320+00:00",
+      "route_key": "COR-GIG-2026-12-03 → 2026-12-10",
       "is_price_drop": false
     }
   ]
