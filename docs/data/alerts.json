@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-05T05:36:55.915630+00:00",
+  "last_updated": "2026-08-05T16:26:41.956539+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -6707,6 +6707,19 @@
       "stops": 0,
       "fetched_at": "2026-08-05T05:35:54.986284+00:00",
       "route_key": "AEP-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 399.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-08-05T16:25:39.787018+00:00",
+      "route_key": "AEP-GIG-2026-12-01 → 2026-12-06",
       "is_price_drop": false
     }
   ]
