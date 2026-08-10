@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-09T15:21:14.327148+00:00",
+  "last_updated": "2026-08-10T04:22:38.338327+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -7083,6 +7083,32 @@
       "currency": "USD",
       "stops": 2,
       "fetched_at": "2026-08-09T15:21:09.099834+00:00",
+      "route_key": "COR-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 357.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-10T04:21:35.700451+00:00",
+      "route_key": "EZE-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "Aerolineas Argentinas, LATAM",
+      "origin": "COR",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 379.0,
+      "currency": "USD",
+      "stops": 2,
+      "fetched_at": "2026-08-10T04:22:34.393883+00:00",
       "route_key": "COR-GIG-2026-12-03 → 2026-12-10",
       "is_price_drop": false
     }
