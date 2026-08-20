@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-20T03:38:08.571258+00:00",
+  "last_updated": "2026-08-20T15:23:46.925102+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -8293,6 +8293,71 @@
       "stops": 0,
       "fetched_at": "2026-08-20T03:37:33.326742+00:00",
       "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 355.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-20T15:22:41.974565+00:00",
+      "route_key": "EZE-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-09",
+      "price": 365.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-20T15:23:06.103401+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-09",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 365.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-20T15:23:09.545663+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "Gol",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 400.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-20T15:22:41.789882+00:00",
+      "route_key": "AEP-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "LATAM",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 400.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-08-20T15:23:09.528321+00:00",
+      "route_key": "AEP-GIG-2026-12-03 → 2026-12-10",
       "is_price_drop": false
     }
   ]
