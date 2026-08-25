@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-24T15:28:54.223707+00:00",
+  "last_updated": "2026-08-25T03:40:00.704822+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -9073,6 +9073,110 @@
       "stops": 1,
       "fetched_at": "2026-08-24T15:27:51.591029+00:00",
       "route_key": "AEP-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 382.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-25T03:38:54.302915+00:00",
+      "route_key": "EZE-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-02 → 2026-12-07",
+      "price": 376.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-25T03:39:04.614702+00:00",
+      "route_key": "EZE-GIG-2026-12-02 → 2026-12-07",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-02 → 2026-12-09",
+      "price": 354.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-25T03:39:11.660086+00:00",
+      "route_key": "EZE-GIG-2026-12-02 → 2026-12-09",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-09",
+      "price": 369.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-25T03:39:18.548887+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-09",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 353.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-25T03:39:21.977405+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 358.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-08-25T03:38:54.389242+00:00",
+      "route_key": "AEP-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-07",
+      "price": 358.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-08-25T03:38:57.715296+00:00",
+      "route_key": "AEP-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "COR",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 389.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-08-25T03:39:25.439748+00:00",
+      "route_key": "COR-GIG-2026-12-01 → 2026-12-06",
       "is_price_drop": false
     }
   ]
