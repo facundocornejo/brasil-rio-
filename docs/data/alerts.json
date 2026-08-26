@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-25T15:33:33.553563+00:00",
+  "last_updated": "2026-08-26T03:44:40.240796+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -9229,6 +9229,71 @@
       "stops": 1,
       "fetched_at": "2026-08-25T15:32:34.054639+00:00",
       "route_key": "AEP-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 355.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-26T03:43:35.109670+00:00",
+      "route_key": "EZE-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-09",
+      "price": 369.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-26T03:43:58.998564+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-09",
+      "is_price_drop": true
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 341.0,
+      "currency": "USD",
+      "stops": 0,
+      "fetched_at": "2026-08-26T03:44:02.388930+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "JetSMART",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-01 → 2026-12-06",
+      "price": 355.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-08-26T03:43:35.106887+00:00",
+      "route_key": "AEP-GIG-2026-12-01 → 2026-12-06",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "Aerolineas Argentinas, LATAM",
+      "origin": "COR",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 379.0,
+      "currency": "USD",
+      "stops": 2,
+      "fetched_at": "2026-08-26T03:44:33.767364+00:00",
+      "route_key": "COR-GIG-2026-12-03 → 2026-12-10",
       "is_price_drop": false
     }
   ]
