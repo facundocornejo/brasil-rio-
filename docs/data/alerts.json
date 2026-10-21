@@ -1,32 +1,6 @@
 {
-  "last_updated": "2026-10-21T08:06:06.930002+00:00",
+  "last_updated": "2026-10-21T19:02:10.654960+00:00",
   "alerts": [
-    {
-      "source": "google_flights",
-      "airline": "Gol",
-      "origin": "EZE",
-      "destination": "GIG",
-      "date": "2026-12-03 → 2026-12-10",
-      "price": 388.0,
-      "currency": "USD",
-      "stops": 0,
-      "fetched_at": "2026-07-23T16:18:52.115036+00:00",
-      "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
-      "is_price_drop": false
-    },
-    {
-      "source": "google_flights",
-      "airline": "Gol",
-      "origin": "AEP",
-      "destination": "GIG",
-      "date": "2026-12-02 → 2026-12-07",
-      "price": 388.0,
-      "currency": "USD",
-      "stops": 0,
-      "fetched_at": "2026-07-23T16:18:35.231054+00:00",
-      "route_key": "AEP-GIG-2026-12-02 → 2026-12-07",
-      "is_price_drop": false
-    },
     {
       "source": "google_flights",
       "airline": "Gol",
@@ -10802,6 +10776,19 @@
       "stops": 1,
       "fetched_at": "2026-10-21T08:05:08.246485+00:00",
       "route_key": "AEP-GIG-2026-12-01 → 2026-12-07",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "LATAM",
+      "origin": "EZE",
+      "destination": "GIG",
+      "date": "2026-12-03 → 2026-12-10",
+      "price": 395.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-10-21T19:01:34.730604+00:00",
+      "route_key": "EZE-GIG-2026-12-03 → 2026-12-10",
       "is_price_drop": false
     }
   ]
