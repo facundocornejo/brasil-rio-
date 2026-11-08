@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-08T09:41:22.286281+00:00",
+  "last_updated": "2026-11-08T19:14:32.389458+00:00",
   "alerts": [
     {
       "source": "google_flights",
@@ -8527,6 +8527,19 @@
       "stops": 1,
       "fetched_at": "2026-11-08T09:40:36.606375+00:00",
       "route_key": "AEP-GIG-2026-12-02 → 2026-12-09",
+      "is_price_drop": false
+    },
+    {
+      "source": "google_flights",
+      "airline": "LATAM",
+      "origin": "AEP",
+      "destination": "GIG",
+      "date": "2026-12-02 → 2026-12-08",
+      "price": 392.0,
+      "currency": "USD",
+      "stops": 1,
+      "fetched_at": "2026-11-08T19:13:42.563426+00:00",
+      "route_key": "AEP-GIG-2026-12-02 → 2026-12-08",
       "is_price_drop": false
     }
   ]
